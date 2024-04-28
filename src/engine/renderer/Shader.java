@@ -5,13 +5,20 @@ import java.nio.FloatBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import org.joml.Matrix2f;
+import org.joml.Matrix3f;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL20;
+import org.lwjgl.opengl.GL30;
 
 public class Shader {
     
     private int shaderProgramID;
+    private boolean beingUsed = false;
 
     private String vertexSource;
     private String fragmentSource;
@@ -47,8 +54,8 @@ public class Shader {
             assert false : "Error: Could not open file for shader; '" + filepath + "'!";
         }
 
-        System.out.println(vertexSource);
-        System.out.println(fragmentSource);
+//        System.out.println(vertexSource);
+//        System.out.println(fragmentSource);
     }
 
     public void compile(){
@@ -107,18 +114,75 @@ public class Shader {
     }
 
     public void use(){
-        // Bind shader Program
-        GL20.glUseProgram(shaderProgramID);
+        if(!beingUsed){
+            // Bind shader Program
+            GL20.glUseProgram(shaderProgramID);
+            beingUsed = true;
+        }
     }
 
     public void detach(){
         GL20.glUseProgram(0);
+        beingUsed = false;
     }
 
-    public void uploadMat4f(String varName, Matrix4f mat4){
+    public void uploadMat4f(String varName, Matrix4f mat){
         int varLocation = GL20.glGetUniformLocation(shaderProgramID, varName);
+        use(); // make sure, we are using the shader
         FloatBuffer matBuffer = BufferUtils.createFloatBuffer(16);
-        mat4.get(matBuffer);
+        mat.get(matBuffer); // flatten the 2d array to a 1d array
         GL20.glUniformMatrix4fv(varLocation, false, matBuffer);
+    }
+
+    public void uploadMat4f(String varName, Matrix3f mat){
+        int varLocation = GL20.glGetUniformLocation(shaderProgramID, varName);
+        use(); // make sure, we are using the shader
+        FloatBuffer matBuffer = BufferUtils.createFloatBuffer(9);
+        mat.get(matBuffer); // flatten the 2d array to a 1d array
+        GL20.glUniformMatrix3fv(varLocation, false, matBuffer);
+    }
+
+    public void uploadMat4f(String varName, Matrix2f mat){
+        int varLocation = GL20.glGetUniformLocation(shaderProgramID, varName);
+        use(); // make sure, we are using the shader
+        FloatBuffer matBuffer = BufferUtils.createFloatBuffer(4);
+        mat.get(matBuffer); // flatten the 2d array to a 1d array
+        GL20.glUniformMatrix2fv(varLocation, false, matBuffer);
+    }
+
+    public void upladVec4f(String varName, Vector4f vec){
+        int varLocation = GL30.glGetUniformLocation(shaderProgramID, varName);
+        use();
+        GL20.glUniform4f(varLocation, vec.x, vec.y, vec.z, vec.w);
+    }
+
+    public void upladVec4f(String varName, Vector3f vec){
+        int varLocation = GL30.glGetUniformLocation(shaderProgramID, varName);
+        use();
+        GL20.glUniform3f(varLocation, vec.x, vec.y, vec.z);
+    }
+
+    public void upladVec2f(String varName, Vector2f vec){
+        int varLocation = GL30.glGetUniformLocation(shaderProgramID, varName);
+        use();
+        GL20.glUniform2f(varLocation, vec.x, vec.y);
+    }
+    
+    public void uploadFloat(String varName, float val){
+        int varLocation = GL20.glGetUniformLocation(shaderProgramID, varName);
+        use();
+        GL20.glUniform1f(varLocation, val);
+    }
+
+    public void uploadInt(String varName, int val){
+        int varLocation = GL20.glGetUniformLocation(shaderProgramID, varName);
+        use();
+        GL20.glUniform1i(varLocation, val);
+    }
+
+    public void uploadTexture(String varName, int slot){
+        int varLocation = GL20.glGetUniformLocation(shaderProgramID, varName);
+        use();
+        GL20.glUniform1i(varLocation, slot);
     }
 }
