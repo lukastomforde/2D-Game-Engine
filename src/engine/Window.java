@@ -44,16 +44,22 @@ public class Window {
         return Window.window;
     }
 
+    public static Scene getCurrentScene(){
+        return get().currentScene;
+    }
+
     public static void changeScene(int newScene){
         switch (newScene){
             case 0:
                 currentScene = new LevelEditorScene();
                 currentScene.init();
+                currentScene.start();
                 break;
             
             case 1:
                 currentScene = new LevelScene();
                 currentScene.init();
+                currentScene.start();
                 break;
             
             default:
@@ -150,7 +156,7 @@ public class Window {
             beginTime = endTime;
             fps = 1.0f / dt;
 
-            System.out.println("fps:" + fps);
+            //System.out.println("fps:" + fps);
         }
     }
 }

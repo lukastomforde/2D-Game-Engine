@@ -134,7 +134,7 @@ public class Shader {
         GL20.glUniformMatrix4fv(varLocation, false, matBuffer);
     }
 
-    public void uploadMat4f(String varName, Matrix3f mat){
+    public void uploadMat3f(String varName, Matrix3f mat){
         int varLocation = GL20.glGetUniformLocation(shaderProgramID, varName);
         use(); // make sure, we are using the shader
         FloatBuffer matBuffer = BufferUtils.createFloatBuffer(9);
@@ -142,7 +142,7 @@ public class Shader {
         GL20.glUniformMatrix3fv(varLocation, false, matBuffer);
     }
 
-    public void uploadMat4f(String varName, Matrix2f mat){
+    public void uploadMat2f(String varName, Matrix2f mat){
         int varLocation = GL20.glGetUniformLocation(shaderProgramID, varName);
         use(); // make sure, we are using the shader
         FloatBuffer matBuffer = BufferUtils.createFloatBuffer(4);
@@ -150,19 +150,19 @@ public class Shader {
         GL20.glUniformMatrix2fv(varLocation, false, matBuffer);
     }
 
-    public void upladVec4f(String varName, Vector4f vec){
+    public void uploadVec4f(String varName, Vector4f vec){
         int varLocation = GL30.glGetUniformLocation(shaderProgramID, varName);
         use();
         GL20.glUniform4f(varLocation, vec.x, vec.y, vec.z, vec.w);
     }
 
-    public void upladVec4f(String varName, Vector3f vec){
+    public void uploadVec3f(String varName, Vector3f vec){
         int varLocation = GL30.glGetUniformLocation(shaderProgramID, varName);
         use();
         GL20.glUniform3f(varLocation, vec.x, vec.y, vec.z);
     }
 
-    public void upladVec2f(String varName, Vector2f vec){
+    public void uploadVec2f(String varName, Vector2f vec){
         int varLocation = GL30.glGetUniformLocation(shaderProgramID, varName);
         use();
         GL20.glUniform2f(varLocation, vec.x, vec.y);
