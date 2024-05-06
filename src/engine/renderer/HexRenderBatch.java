@@ -5,6 +5,7 @@ import org.lwjgl.opengl.GL30;
 
 import engine.Window;
 import engine.components.HexRenderer;
+import engine.util.AssetPool;
 
 public class HexRenderBatch {
     // Vertex
@@ -33,7 +34,7 @@ public class HexRenderBatch {
     private Shader shader;
 
     public HexRenderBatch(int maxBatchSize){
-        shader = new Shader("assets/shaders/default.glsl");
+        shader = AssetPool.getShader("default.glsl");
         shader.compile();
         this.hexes = new HexRenderer[maxBatchSize];
         this.maxBatchSize = maxBatchSize;

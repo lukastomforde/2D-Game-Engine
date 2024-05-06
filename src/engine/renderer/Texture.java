@@ -11,6 +11,7 @@ public class Texture {
     
     private String filepath;
     private int texID;
+    private int width, height;
 
     public Texture(String filepath){
         this.filepath = filepath;
@@ -34,9 +35,13 @@ public class Texture {
         IntBuffer height = BufferUtils.createIntBuffer(1);
         IntBuffer channels = BufferUtils.createIntBuffer(1);
 
+        STBImage.stbi_set_flip_vertically_on_load(true);
         ByteBuffer image = STBImage.stbi_load(filepath, width, height, channels, 0);
 
         if (image != null){
+            this.width = width.get(0);
+            this.height = height.get(0);
+            
             if (channels.get(0) == 3){
                 GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGB, width.get(0), height.get(0), 0, GL11.GL_RGB, GL11.GL_UNSIGNED_BYTE, image);
             } else if (channels.get(0) == 4){
@@ -58,5 +63,13 @@ public class Texture {
 
     public void unbind(){
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+    }
+
+    public int getWidth(){
+        return width;
+    }
+
+    public int getHeight(){
+        return height;
     }
 }

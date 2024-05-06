@@ -1,6 +1,7 @@
 package engine.renderer;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import engine.components.HexRenderer;
@@ -34,18 +35,22 @@ public class Renderer {
     private void addSprite(SpriteRenderer sprite){
         boolean added = false;
         for(SpriteRenderBatch batch : spritBatches){
-            if(batch.hasRoom()){
-                batch.addSprite(sprite);
-                added = true;
-                break;
+            if(batch.hasRoom() && batch.zIndex() == sprite.gameObject.zIndex()){
+                Texture texture = sprite.getTexture();
+                if(texture == null || batch.hasTexture(texture) || batch.hasTextureRoom()){
+                    batch.addSprite(sprite);
+                    added = true;
+                    break;
+                }
             }
         }
 
         if (!added){
-            SpriteRenderBatch batch = new SpriteRenderBatch(MAX_BATCH_SIZE);
+            SpriteRenderBatch batch = new SpriteRenderBatch(MAX_BATCH_SIZE, sprite.gameObject.zIndex());
             batch.start();
             spritBatches.add(batch);
             batch.addSprite(sprite);
+            Collections.sort(spritBatches);
         }
     }
 
@@ -72,8 +77,8 @@ public class Renderer {
             batch.render();
         }
 
-        for (HexRenderBatch batch : hexBatches){
-            batch.render();
-        }
+        //for (HexRenderBatch batch : hexBatches){
+        //    batch.render();
+        //}
     }
 }

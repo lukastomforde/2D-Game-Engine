@@ -6,9 +6,11 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL20;
 import org.lwjgl.system.MemoryUtil;
 
-import engine.util.Time;
+import engine.input.KeyListener;
+import engine.input.MouseListener;
 
 public class Window {
     
@@ -123,18 +125,23 @@ public class Window {
         // ! will break without this line!
         GL.createCapabilities();
 
+        // enabe alpha blending
+        GL20.glEnable(GL20.GL_BLEND);
+        GL20.glBlendFunc(GL20.GL_ONE, GL20.GL_ONE_MINUS_SRC_ALPHA);
+
         Window.changeScene(0);
     }
 
     public void loop(){
 
-        float beginTime = Time.getTime();
+        float beginTime = (float) GLFW.glfwGetTime();
         float endTime;
         float dt = -1.0f;
         float fps = -1.0f;
 
         while (!GLFW.glfwWindowShouldClose(glfwWindow)) {
             // Poll events
+
             GLFW.glfwPollEvents();
 
             GL11.glClearColor(r, g, b, a);
@@ -151,7 +158,7 @@ public class Window {
  
             GLFW.glfwSwapBuffers(glfwWindow);
             
-            endTime = Time.getTime();
+            endTime = (float) GLFW.glfwGetTime();
             dt = endTime-beginTime;
             beginTime = endTime;
             fps = 1.0f / dt;
